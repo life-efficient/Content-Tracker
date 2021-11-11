@@ -1,0 +1,50 @@
+name: Deploy across content repos
+
+on:
+  release:
+    types:
+      - released
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repo: 
+          - Essentials
+          - Software-Engineering
+          - Cloud-and-DevOps
+          - Data-Engineering
+          - Machine-Learning
+          - Deep-Learning
+          - MLOps
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Update workflow file
+        run: |
+          prefix_to_remove="refs/tags/"
+          tag_name=${GITHUB_REF#"$prefix_to_remove"}
+          echo "" >> workflow_to_deploy.yml # add newline
+          echo "      - uses: life-efficient/Content-Tracker-Action@$tag_name" >> workflow_to_deploy.yml # add new step
+          mv workflow_to_deploy.yml ..
+
+      - uses: actions/checkout@v2
+        with:
+          repository: life-efficient/${{ matrix.repo }}-Private
+          token: ${{ secrets.PUBLICPAT }}
+
+      - name: Copy updated workflow file over
+        run: |
+          cp ../workflow_to_deploy.yml .github/workflows/content-tracker.yaml
+          
+      - name: Commit and push changes
+        run: |
+          git config --global user.email "harryaberg@gmail.com"
+          git config --global user.name "Harry"
+          git add .
+          git commit -m "Updates content tracker action"
+          git push
