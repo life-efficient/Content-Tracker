@@ -28,9 +28,9 @@ jobs:
         run: |
           prefix_to_remove="refs/tags/"
           tag_name=${GITHUB_REF#"$prefix_to_remove"}
-          echo "" >> workflow_to_deploy.yaml # add newline
-          echo "      - uses: life-efficient/Content-Tracker-Action@$tag_name" >> workflow_to_deploy.yaml # add new step
-          mv workflow_to_deploy.yaml ..
+          echo "" >> workflow_template.yaml # add newline
+          echo "      - uses: life-efficient/Content-Tracker-Action@$tag_name" >> workflow_template.yaml # add new step
+          mv workflow_template.yaml ..
 
       - uses: actions/checkout@v2
         with:
@@ -39,7 +39,7 @@ jobs:
 
       - name: Copy updated workflow file over
         run: |
-          cp ../workflow_to_deploy.yaml .github/workflows/content-tracker.yaml
+          cp ../workflow_template.yaml .github/workflows/content-tracker.yaml
           
       - name: Commit and push changes
         run: |
