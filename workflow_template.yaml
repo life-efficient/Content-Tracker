@@ -17,4 +17,4 @@ jobs:
             args:
               ${{ secrets.SLACK_TOKEN }}
               ${{ secrets.PUBLICPAT }}
-              ${{ github.repository }
+              ${{ github.repository }}
