@@ -30,6 +30,7 @@ jobs:
           tag_name=${GITHUB_REF#"$prefix_to_remove"}
           echo "" >> workflow_template.yaml # add newline
           sed -i "16 i \ \ \ \ \ \ - uses: life-efficient/Content-Tracker-Action@$tag_name" workflow_template.yaml # add new step
+          echo "            ${{ matrix.repo }}" >> workflow_template.yaml
           mv workflow_template.yaml ..
 
       - uses: actions/checkout@v2
