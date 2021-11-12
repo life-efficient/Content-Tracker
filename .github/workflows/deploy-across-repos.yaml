@@ -30,11 +30,6 @@ jobs:
           tag_name=${GITHUB_REF#"$prefix_to_remove"}
           echo "" >> workflow_template.yaml # add newline
           echo "      - uses: life-efficient/Content-Tracker-Action@$tag_name" >> workflow_template.yaml # add new step
-          echo "        with:" >>  workflow_template.yaml
-          echo "          args:" >> workflow_template.yaml 
-          echo "            ${{ secrets.SLACK_TOKEN }}" >> workflow_template.yaml
-          echo "            ${{ secrets.PUBLICPAT }}" >> workflow_template.yaml
-          echo "            ${{ github.repository }}" >> workflow_template.yaml
           mv workflow_template.yaml ..
 
       - uses: actions/checkout@v2
