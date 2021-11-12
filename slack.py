@@ -6,6 +6,7 @@ from slack_sdk import WebClient
 
 slack_token = sys.argv[1]
 git_token = sys.argv[2]
+print(sys.argv[3])
 repo = sys.argv[3].split('/')[1]
 
 client = WebClient(slack_token)
