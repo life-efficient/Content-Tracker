@@ -1,0 +1,5 @@
+name: 'Content Tracker'
+description: 'Send messages to slack to remind about PRs'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
