@@ -2,18 +2,21 @@ import sys
 import os
 from github import Github
 from datetime import datetime
+from datetime import timedelta
 from slack_sdk import WebClient
 
-def check_len(issue, this_week):
+def check_len(issue, this_week, week_ago):
     if this_week:
         message_time = 'this week'
+        query = f'?q=is%3Aissue+is%3Aopen+updated%3A%3E{week_ago}+'
     else:
         message_time = 'more than one week ago'
+        query = f'?q=is%3Aissue+is%3Aopen+updated%3A%3C{week_ago}'
         
     message = ''
     if len(issue) > 0:
         issues_link = '/'.join(issue[0].html_url.split('/')[:-1])
-        message += f"    {len(issue)} <{issues_link}|issues> were opened {message_time}\n"
+        message += f"    {len(issue)} <{issues_link}{query}|issues> were opened {message_time}\n"
     elif len(issue) == 0 and not this_week:
         pass
     else:
@@ -21,10 +24,10 @@ def check_len(issue, this_week):
 
     return message
 
-def create_messages(n, repo, current, late):
+def create_messages(n, repo, current, late, week_ago):
     message = f'There are {n} issue(s) in {repo} \n'
-    message += check_len(current, True)
-    message += check_len(late, False)
+    message += check_len(current, True, week_ago)
+    message += check_len(late, False, week_ago)
     return message
 
 
@@ -39,6 +42,7 @@ channel_id = "C02GMMQUQ56"  # Content Operation
 current = []
 late = []
 today = datetime.now()
+week_ago = datetime.strftime(today - timedelta(days=7), '%Y-%m-%d')
 prs = 0
 
 for n, issue in enumerate(g.get_user().get_repo(repo).get_issues(state='open')):
@@ -52,8 +56,9 @@ for n, issue in enumerate(g.get_user().get_repo(repo).get_issues(state='open')):
         current.append(issue)
 
 n = len(current) + len(late)
+
 if n > 0:
-    message = create_messages(n, repo, current, late)
+    message = create_messages(n, repo, current, late, week_ago)
 else:
     message = f'No issues found in {repo}'
 
