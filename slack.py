@@ -50,7 +50,7 @@ for n, issue in enumerate(g.get_user().get_repo(repo).get_issues(state='open')):
     else:
         current.append(issue)
 
-n -= prs 
+n -= prs + 1
 if n > 0:
     message = create_messages(n, repo, current, late)
 else:
