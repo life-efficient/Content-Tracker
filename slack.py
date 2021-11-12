@@ -9,14 +9,15 @@ def check_len(issue, this_week):
         message_time = 'this week'
     else:
         message_time = 'more than one week ago'
+        
     message = ''
     if len(issue) > 0:
-        message += f'{len(issue)} issues were opened {message_time}:\n'
-        for i in issue:
-            message += f"<{i.html_url}|{i.html_url.split('/')[-1]}> \t"
-        message += '\n'
+        issues_link = '/'.join(issue[0].html_url.split('/')[:-1])
+        message += f"    {len(issue)} <{issues_link}|issues> were opened {message_time}\n"
+    elif len(issue) == 0 and not this_week:
+        pass
     else:
-        message += f'No issues were opened {message_time}\n'
+        message += f'    No issues were opened {message_time}\n'
 
     return message
 
@@ -50,7 +51,7 @@ for n, issue in enumerate(g.get_user().get_repo(repo).get_issues(state='open')):
     else:
         current.append(issue)
 
-n -= prs + 1
+n = len(current) + len(late)
 if n > 0:
     message = create_messages(n, repo, current, late)
 else:
