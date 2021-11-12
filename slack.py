@@ -8,10 +8,10 @@ from slack_sdk import WebClient
 def check_len(issue, this_week, week_ago):
     if this_week:
         message_time = 'this week'
-        query = f'?q=is%3Aissue+is%3Aopen+updated%3A%3E{week_ago}+'
+        query = f'?q=is%3Aissue+is%3Aopen+created%3A%3E{week_ago}+'
     else:
         message_time = 'more than one week ago'
-        query = f'?q=is%3Aissue+is%3Aopen+updated%3A%3C{week_ago}'
+        query = f'?q=is%3Aissue+is%3Aopen+created%3A%3C{week_ago}'
         
     message = ''
     if len(issue) > 0:
