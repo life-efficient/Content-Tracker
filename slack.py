@@ -38,9 +38,11 @@ channel_id = "C02GMMQUQ56"  # Content Operation
 current = []
 late = []
 today = datetime.now()
+prs = 0
 
 for n, issue in enumerate(g.get_user().get_repo(repo).get_issues(state='open')):
     if issue.pull_request:
+        prs += 1 
         continue
     diff = (today - issue.created_at).days
     if diff > 7:
@@ -48,6 +50,7 @@ for n, issue in enumerate(g.get_user().get_repo(repo).get_issues(state='open')):
     else:
         current.append(issue)
 
+n -= prs 
 if n > 0:
     message = create_messages(n, repo, current, late)
 else:
