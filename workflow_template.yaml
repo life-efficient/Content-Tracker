@@ -17,5 +17,3 @@ jobs:
           args:
             ${{ secrets.SLACK_TOKEN }}
             ${{ secrets.PUBLICPAT }}
-            ${{ github.event.repository.name }}
-
