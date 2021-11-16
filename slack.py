@@ -32,12 +32,16 @@ def create_messages(current, late, week_ago):
     message += check_len(late, False, week_ago)
     return message
 
-def create_messages_pr(prs, repo):
+def create_messages_pr(prs, repo, n):
+    if n > 0:
+        new_line = '\n'
+    else:
+        new_line = ''
     html = '/'.join(prs[0].html_url.split('/')[:-1])
     if len(prs) > 1:
-        message = f'There are {len(prs)} <{html}|PR(s)> in {repo} \n'
+        message = f'__{repo}__ has {len(prs)} <{html}|PR(s)> {new_line}'
     elif len(prs) == 1:
-        message = f'Just one <{html}|PR(s)> in {repo}. You can do it guys!\n'
+        message = f'__{repo}__ has just one <{html}|PR(s)> in {repo} {new_line}'
     return message
 
 
@@ -47,8 +51,8 @@ repo = sys.argv[3]
 
 client = WebClient(slack_token)
 g = Github(git_token)
-channel_id = "C02GMMQUQ56"  # Content Operation
-# channel_id = "C02MBCYLF08" # Test Channel
+# channel_id = "C02GMMQUQ56"  # Content Operation
+channel_id = "C02MBCYLF08" # Test Channel
 current = []
 late = []
 today = datetime.now()
@@ -65,21 +69,30 @@ for n, issue in enumerate(g.get_user().get_repo(repo).get_issues(state='open')):
     else:
         current.append(issue)
 
-# Initialize message with the PRs
-message = ''
-if len(prs) > 0:
-    message += create_messages_pr(prs, repo)
-
 # Check issues without considering PRs
 n = len(current) + len(late)
 
+# Initialize message with the PRs
+message = ''
+if len(prs) > 0:
+    message += create_messages_pr(prs, repo, n)
+
+
 # Update the message with the issues
 if n > 1:
-    message += f'There are {n} issues in {repo} \n'
-    message += create_messages(current, late, week_ago)
+    if len(prs) > 0:
+        message += f'and {n} issues\n'
+        message += create_messages(current, late, week_ago)
+    else:
+        message += f'There are {n} issues in {repo} \n'
+        message += create_messages(current, late, week_ago)
 elif n == 1:
-    message += f'There is just one issue in {repo} \n'
-    message += create_messages(current, late, week_ago) 
+    if len(prs) > 0:
+        message += f'and just one issue\n'
+        message += create_messages(current, late, week_ago)
+    else:
+        message += f'There is just one issue in {repo} \n'
+        message += create_messages(current, late, week_ago) 
 
 if len(prs) + n > 0:
     result = client.chat_postMessage(
