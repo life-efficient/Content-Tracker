@@ -34,14 +34,14 @@ def create_messages(current, late, week_ago):
 
 def create_messages_pr(prs, repo, n):
     if n > 0:
-        new_line = '\n'
-    else:
         new_line = ''
+    else:
+        new_line = '\n'
     html = '/'.join(prs[0].html_url.split('/')[:-1])
     if len(prs) > 1:
-        message = f'__{repo}__ has {len(prs)} <{html}|PR(s)> {new_line}'
+        message = f'*{repo}* has {len(prs)} open <{html}|PR(s)> {new_line}'
     elif len(prs) == 1:
-        message = f'__{repo}__ has just one <{html}|PR(s)> in {repo} {new_line}'
+        message = f'*{repo}* has just one open <{html}|PR(s)> in {repo} {new_line}'
     return message
 
 
@@ -84,14 +84,14 @@ if n > 1:
         message += f'and {n} issues\n'
         message += create_messages(current, late, week_ago)
     else:
-        message += f'There are {n} issues in {repo} \n'
+        message += f'*{repo}* has {n} issues\n'
         message += create_messages(current, late, week_ago)
 elif n == 1:
     if len(prs) > 0:
         message += f'and just one issue\n'
         message += create_messages(current, late, week_ago)
     else:
-        message += f'There is just one issue in {repo} \n'
+        message += f'*{repo}* has just one issue \n'
         message += create_messages(current, late, week_ago) 
 
 if len(prs) + n > 0:
