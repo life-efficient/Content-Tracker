@@ -24,10 +24,14 @@ def check_len(issue, this_week, week_ago):
 
     return message
 
-def create_messages(n, repo, current, late, week_ago):
-    message = f'There are {n} issue(s) in {repo} \n'
-    message += check_len(current, True, week_ago)
+def create_messages(current, late, week_ago):
+    message = check_len(current, True, week_ago)
     message += check_len(late, False, week_ago)
+    return message
+
+def create_messages_pr(prs, repo):
+    html = prs[0].html_url
+    message = f'    There are {len(prs)} <{html}|PR(s)> in {repo} \n'
     return message
 
 
@@ -37,17 +41,17 @@ repo = sys.argv[3]
 
 client = WebClient(slack_token)
 g = Github(git_token)
-channel_id = "C02GMMQUQ56"  # Content Operation
-# channel_id = "C02MBCYLF08" # Test Channel
+# channel_id = "C02GMMQUQ56"  # Content Operation
+channel_id = "C02MBCYLF08" # Test Channel
 current = []
 late = []
 today = datetime.now()
 week_ago = datetime.strftime(today - timedelta(days=7), '%Y-%m-%d')
-prs = 0
+prs = []
 
 for n, issue in enumerate(g.get_user().get_repo(repo).get_issues(state='open')):
     if issue.pull_request:
-        prs += 1 
+        prs.append(issue)
         continue
     diff = (today - issue.created_at).days
     if diff > 7:
@@ -55,13 +59,19 @@ for n, issue in enumerate(g.get_user().get_repo(repo).get_issues(state='open')):
     else:
         current.append(issue)
 
+# Check issues without considering PRs
 n = len(current) + len(late)
+message = f'There are {n} issues(s) in {repo} \n'
 
+# Update the message with the PRs
+if len(prs) > 0:
+    message += create_messages_pr(prs, repo)
+
+# Update the message with the issues
 if n > 0:
-    message = create_messages(n, repo, current, late, week_ago)
-else:
-    message = f'No issues found in {repo}'
+    message += create_messages(current, late, week_ago)
 
-result = client.chat_postMessage(
-                    channel=channel_id,
-                    text=message)
+if len(prs) + n > 0:
+    result = client.chat_postMessage(
+                        channel=channel_id,
+                        text=message)
