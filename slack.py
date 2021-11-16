@@ -14,9 +14,12 @@ def check_len(issue, this_week, week_ago):
         query = f'?q=is%3Aissue+is%3Aopen+created%3A%3C{week_ago}'
         
     message = ''
-    if len(issue) > 0:
+    if len(issue) > 1:
         issues_link = '/'.join(issue[0].html_url.split('/')[:-1])
         message += f"    {len(issue)} <{issues_link}{query}|issues> were opened {message_time}\n"
+    elif len(issue) == 1:
+        issues_link = '/'.join(issue[0].html_url.split('/')[:-1])
+        message += f"    Just one <{issues_link}{query}|issue> was opened {message_time}\n"
     elif len(issue) == 0 and not this_week:
         pass
     else:
@@ -30,8 +33,11 @@ def create_messages(current, late, week_ago):
     return message
 
 def create_messages_pr(prs, repo):
-    html = prs[0].html_url
-    message = f'    There are {len(prs)} <{html}|PR(s)> in {repo} \n'
+    html = '/'.join(prs[0].html_url.split('/')[:-1])
+    if len(prs) > 1:
+        message = f'There are {len(prs)} <{html}|PR(s)> in {repo} \n'
+    elif len(prs) == 1:
+        message = f'Just one <{html}|PR(s)> in {repo}. You can do it guys!\n'
     return message
 
 
@@ -59,17 +65,21 @@ for n, issue in enumerate(g.get_user().get_repo(repo).get_issues(state='open')):
     else:
         current.append(issue)
 
-# Check issues without considering PRs
-n = len(current) + len(late)
-message = f'There are {n} issues(s) in {repo} \n'
-
-# Update the message with the PRs
+# Initialize message with the PRs
+message = ''
 if len(prs) > 0:
     message += create_messages_pr(prs, repo)
 
+# Check issues without considering PRs
+n = len(current) + len(late)
+
 # Update the message with the issues
-if n > 0:
+if n > 1:
+    message += f'There are {n} issues in {repo} \n'
     message += create_messages(current, late, week_ago)
+elif n == 1:
+    message += f'There is just one issue in {repo} \n'
+    message += create_messages(current, late, week_ago) 
 
 if len(prs) + n > 0:
     result = client.chat_postMessage(
