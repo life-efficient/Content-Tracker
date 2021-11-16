@@ -19,7 +19,7 @@ def check_len(issue, this_week, week_ago):
         message += f"    {len(issue)} <{issues_link}{query}|issues> were opened {message_time}\n"
     elif len(issue) == 1:
         issues_link = '/'.join(issue[0].html_url.split('/')[:-1])
-        message += f"    Just one <{issues_link}{query}|issue> was opened {message_time}\n"
+        message += f"    Just one <{issues_link}{query}|issue> was opened {message_time}. Almost there!\n"
     elif len(issue) == 0 and not this_week:
         pass
     else:
@@ -47,8 +47,8 @@ repo = sys.argv[3]
 
 client = WebClient(slack_token)
 g = Github(git_token)
-# channel_id = "C02GMMQUQ56"  # Content Operation
-channel_id = "C02MBCYLF08" # Test Channel
+channel_id = "C02GMMQUQ56"  # Content Operation
+# channel_id = "C02MBCYLF08" # Test Channel
 current = []
 late = []
 today = datetime.now()
