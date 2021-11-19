@@ -25,7 +25,7 @@ def check_len(issue, this_week, week_ago):
     elif len(issue) == 0 and not this_week:
         pass
     else:
-        message += f'        :aicore: No issues were opened {message_time}\n'
+        message += f'        :large_green_circle: No issues were opened {message_time}\n'
 
     return message
 
