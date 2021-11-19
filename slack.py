@@ -9,21 +9,23 @@ def check_len(issue, this_week, week_ago):
     if this_week:
         message_time = 'this week'
         query = f'?q=is%3Aissue+is%3Aopen+created%3A%3E{week_ago}+'
+        emoji = ':warning:'
     else:
         message_time = 'more than one week ago'
         query = f'?q=is%3Aissue+is%3Aopen+created%3A%3C{week_ago}'
+        emoji = ':siren:'
         
     message = ''
     if len(issue) > 1:
         issues_link = '/'.join(issue[0].html_url.split('/')[:-1])
-        message += f"    {len(issue)} <{issues_link}{query}|issues> were opened {message_time}\n"
+        message += f"        {emoji} {len(issue)} <{issues_link}{query}|issues> were opened {message_time}\n"
     elif len(issue) == 1:
         issues_link = '/'.join(issue[0].html_url.split('/')[:-1])
-        message += f"    Just one <{issues_link}{query}|issue> was opened {message_time}. Almost there!\n"
+        message += f"        {emoji} Just one <{issues_link}{query}|issue> was opened {message_time}. Almost there!\n"
     elif len(issue) == 0 and not this_week:
         pass
     else:
-        message += f'    No issues were opened {message_time}\n'
+        message += f'        :white_tick: No issues were opened {message_time}\n'
 
     return message
 
@@ -41,7 +43,7 @@ def create_messages_pr(prs, repo, n):
     if len(prs) > 1:
         message = f'*{repo}* has {len(prs)} open <{html}|PR(s)> {new_line}'
     elif len(prs) == 1:
-        message = f'*{repo}* has just one open <{html}|PR(s)> in {repo} {new_line}'
+        message = f'*{repo}* has just one open <{html}|PR(s)> {new_line}'
     return message
 
 
@@ -51,8 +53,8 @@ repo = sys.argv[3]
 
 client = WebClient(slack_token)
 g = Github(git_token)
-channel_id = "C02GMMQUQ56"  # Content Operation
-# channel_id = "C02MBCYLF08" # Test Channel
+# channel_id = "C02GMMQUQ56"  # Content Operation
+channel_id = "C02MBCYLF08" # Test Channel
 current = []
 late = []
 today = datetime.now()
