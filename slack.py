@@ -9,11 +9,11 @@ def check_len(issue, this_week, week_ago):
     if this_week:
         message_time = 'this week'
         query = f'?q=is%3Aissue+is%3Aopen+created%3A%3E{week_ago}+'
-        emoji = ':warning:'
+        emoji = ':red_circle:'
     else:
         message_time = 'more than one week ago'
         query = f'?q=is%3Aissue+is%3Aopen+created%3A%3C{week_ago}'
-        emoji = ':siren:'
+        emoji = ':mega:'
         
     message = ''
     if len(issue) > 1:
@@ -53,8 +53,8 @@ repo = sys.argv[3]
 
 client = WebClient(slack_token)
 g = Github(git_token)
-# channel_id = "C02GMMQUQ56"  # Content Operation
-channel_id = "C02MBCYLF08" # Test Channel
+channel_id = "C02GMMQUQ56"  # Content Operation
+# channel_id = "C02MBCYLF08" # Test Channel
 current = []
 late = []
 today = datetime.now()
