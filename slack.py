@@ -13,7 +13,7 @@ def check_len(issue, this_week, week_ago):
     else:
         message_time = 'more than one week ago'
         query = f'?q=is%3Aissue+is%3Aopen+created%3A%3C{week_ago}'
-        emoji = ':red_circle:'
+        emoji = ':rotating_light:'
         
     message = ''
     if len(issue) > 1:
@@ -25,7 +25,7 @@ def check_len(issue, this_week, week_ago):
     elif len(issue) == 0 and not this_week:
         pass
     else:
-        message += f'        :large_green_circle: No issues were opened {message_time}\n'
+        message += f'        :white_check_mark: No issues were opened {message_time}\n'
 
     return message
 
