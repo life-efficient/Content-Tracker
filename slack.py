@@ -8,14 +8,14 @@ from slack_sdk import WebClient
 def check_len(issue_bugs, issue_non_bugs, this_week, week_ago):
     if this_week:
         message_time = 'this week'
-        query_non_bug = f'?q=is%3Aopen+is%3Aopen+created%3A%3D%3E{week_ago}+-label%3Abug+'
-        query_bug = f'?q=is%3Aopen+is%3Aopen+created%3A%3D%3E{week_ago}+label%3Abug+'
+        query_non_bug = f'?q=is%3Aopen+is%3Aissue+created%3A%3D%3E{week_ago}+-label%3Abug+'
+        query_bug = f'?q=is%3Aopen+is%3Aissue+created%3A%3D%3E{week_ago}+label%3Abug+'
         emoji = ':warning:'
         emoji_bug = ':bug:'
     else:
         message_time = 'more than one week ago'
-        query_non_bug = f'?q=is%3Aopen+is%3Aopen+created%3A%3C{week_ago}+-label%3Abug+'
-        query_bug = f'?q=is%3Aopen+is%3Aopen+created%3A%3C{week_ago}+label%3Abug+'
+        query_non_bug = f'?q=is%3Aopen+is%3Aissue+created%3A%3C{week_ago}+-label%3Abug+'
+        query_bug = f'?q=is%3Aopen+is%3Aissue+created%3A%3C{week_ago}+label%3Abug+'
         emoji = ':rotating_light:'
         emoji_bug = ':ladybug:'
         
